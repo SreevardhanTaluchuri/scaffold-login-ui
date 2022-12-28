@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { loginUser } from "../../services/api/auth";
 import { setItem } from "../../helpers/miscelleneous";
 import { useHistory } from "react-router";
@@ -6,8 +6,8 @@ import { useDispatch } from 'react-redux'
 import * as types from "../../store/actionTypes/auth";
 import { login } from "../../store/reducers/user";
 import { useSelector } from "react-redux";
-// import * as firebase_config from "./../../helpers/firebase-config";
-// import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import * as firebase_config from "./../../helpers/firebase-config";
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import instance from "../../services/httpinstance/axios";
 const Login = () => {
     const { user } = useSelector((state) => state.user);
@@ -18,42 +18,49 @@ const Login = () => {
         username: "",
         password: "",
     });
-    // const auth = getAuth(firebase_config.app)
+    const auth = getAuth(firebase_config.app)
     const addData = (e) => {
         const copyData = { ...data };
         copyData[e.target.id] = e.target.value;
         setData(copyData);
     };
-    // const loginWithGoogle = async (e) => {
-    //     e.preventDefault();
-    //     try {
-    //         const provider = new GoogleAuthProvider();
-    //         const result = await signInWithPopup(auth, provider)
-    //         const credential = GoogleAuthProvider.credentialFromResult(result);
-    //         const token = credential.accessToken;
-    //         console.log(result.user.accessToken);
-    //         dispatch(login({ data: result.user.accessToken }))
-    //         setTimeout(async () => {
-    //             if (user.user.length != 0) {
-    //                 await setItem("auth", user.user);
-    //                 await setItem("time", user.user)
-    //                 console.log(user.user.length)
-    //                 history.replace("/signUp");
-    //             }
-    //         }, 5000)
-    //     } catch (e) {
-    //         console.log(e.code, e.message)
-    //     }
-    // }
+    const loginWithGoogle = async (e) => {
+        e.preventDefault();
+        try {
+            const provider = new GoogleAuthProvider();
+            const result = await signInWithPopup(auth, provider)
+            const credential = GoogleAuthProvider.credentialFromResult(result);
+            const token = credential.accessToken;
+            console.log(result.user.accessToken);
+            dispatch(login({ data: result.user.accessToken }))
+            setTimeout(async () => {
+                console.log(user)
+                if (user.user.length != 0) {
+                    await setItem("auth", user.user);
+                    await setItem("time", user.user)
+                    console.log(user.user.length)
+                    history.replace("/signUp");
+                }
+            }, 5000)
+        } catch (e) {
+            console.log(e.code, e.message)
+        }
+    }
+    useEffect(() => {
+        if (user.user) {
+            setItem("auth", user);
+            setItem("time", user.user)
+            history.replace("/signup");
+        }
+    }, [user])
     const submitData = async (e) => {
         e.preventDefault();
         try {
             await dispatch(login(data))
             setTimeout(async () => {
-                if (user.user.length != 0) {
-                    await setItem("auth", user.user);
+                if (user.user) {
+                    await setItem("auth", user);
                     await setItem("time", user.user)
-                    console.log(user.user.length)
                     history.replace("/signup");
                 }
             }, 5000)
@@ -119,7 +126,7 @@ const Login = () => {
                         >
                             Login
                         </button>
-                        {/* <button onClick={(e) => loginWithGoogle(e)}>Login with Google</button> */}
+                        <button onClick={(e) => loginWithGoogle(e)}>Login with Google</button>
                     </div>
                 </form>
             </div>

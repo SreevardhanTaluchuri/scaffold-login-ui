@@ -9,7 +9,7 @@ const instance = (url, method, data, token) => {
         data: data,
         headers: {
             "Content-Type": "application/json",
-            'Authorization': () => token ? token : ""
+            'Authorization': token ? token : ""
         },
     });
 }

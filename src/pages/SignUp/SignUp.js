@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-// import { signUp } from "../../services/api/auth";
+import { signUp } from "../../services/api/auth";
 
 const SignUp = () => {
     const [data, setData] = useState({
@@ -24,12 +24,12 @@ const SignUp = () => {
                 email: data.email,
             };
 
-            // try {
-            //     const res = await signUp(copyData);
-            //     console.log(res.data);
-            // } catch (err) {
-            //     console.log(err.data);
-            // }
+            try {
+                const res = await signUp(copyData);
+                console.log(res.data);
+            } catch (err) {
+                console.log(err.data);
+            }
         } else {
             console.log("password not matched");
         }
@@ -112,6 +112,7 @@ const SignUp = () => {
                     </div>
                     <div class="flex items-center justify-between">
                         <button
+                            onClick={(e) => submitData(e)}
                             class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                             type="button"
                         >

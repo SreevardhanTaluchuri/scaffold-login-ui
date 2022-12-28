@@ -7,6 +7,8 @@ export const loginUser = async (url, method, data) => {
     const token = await getAuthToken();
     return await instance(url, method, data, token);
 };
-export const signUp = (data) => {
-    // return axios.post(signupUrl(), data);
+export const signUp = async (data) => {
+    const token = await getAuthToken();
+    console.log(token)
+    return await instance(signupUrl(), "POST", data, token);
 };
