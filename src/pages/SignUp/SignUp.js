@@ -1,3 +1,4 @@
+// import { IonContent, IonPage } from "@ionic/react";
 import React, { useState } from "react";
 import { signUp } from "../../services/api/auth";
 
@@ -7,6 +8,7 @@ const SignUp = () => {
         email: "",
         conformpassword: "",
         password: "",
+        verification: ""
     });
     const addData = (e) => {
         const copyData = { ...data };
@@ -22,6 +24,7 @@ const SignUp = () => {
                 username: data.username,
                 password: data.password,
                 email: data.email,
+                two_auth: data.verification == 'true' ? true : false
             };
 
             try {
@@ -105,6 +108,23 @@ const SignUp = () => {
                             type="text"
                             id="conformpassword"
                             placeholder="conformpassword"
+                            onChange={(e) => {
+                                addData(e);
+                            }}
+                        />
+                    </div>
+                    <div class="mb-4 border-b border-black">
+                        <label
+                            class="block text-gray-700 text-sm font-bold mb-2"
+                            for="username"
+                        >
+                            Two Factor authentication
+                        </label>
+                        <input
+                            class="bg-transparent w-full py-2 px-3 text-gray-700"
+                            type="text"
+                            id="verification"
+                            placeholder="true or false"
                             onChange={(e) => {
                                 addData(e);
                             }}

@@ -15,7 +15,7 @@ const Login = () => {
     const dispatch = useDispatch();
     const [error, setError] = useState();
     const [data, setData] = useState({
-        username: "",
+        email: "",
         password: "",
     });
     const auth = getAuth(firebase_config.app)
@@ -31,7 +31,6 @@ const Login = () => {
             const result = await signInWithPopup(auth, provider)
             const credential = GoogleAuthProvider.credentialFromResult(result);
             const token = credential.accessToken;
-            console.log(result.user.accessToken);
             dispatch(login({ data: result.user.accessToken }))
             setTimeout(async () => {
                 console.log(user)
@@ -47,10 +46,15 @@ const Login = () => {
         }
     }
     useEffect(() => {
-        if (user.user) {
+        console.log(user)
+        if (user?.token) {
             setItem("auth", user);
-            setItem("time", user.user)
-            history.replace("/signup");
+            setItem("time", new Date().getDate() + new Date().getTime());
+            if (user?.user?.signInMethod == 'email' && user?.user?.verification) {
+                history.push('/auth/verification')
+            } else {
+                history.push('/dashboard')
+            }
         }
     }, [user])
     const submitData = async (e) => {
@@ -84,7 +88,7 @@ const Login = () => {
                         <div className="mb-8 text-[18px] border-b border-black">
                             <input
                                 className="bg-transparent w-full py-3 px-3 text-gray-700  "
-                                id="username"
+                                id="email"
                                 type="text"
                                 name="name"
                                 placeholder="Enter username"
